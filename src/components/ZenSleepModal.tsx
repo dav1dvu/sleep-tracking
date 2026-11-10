@@ -138,46 +138,43 @@ export function ZenSleepModal({
       <div className="w-full max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-amber-500/10">
         {/* Quick Ambient Sounds */}
         <div className="flex items-center gap-2 overflow-x-auto py-1 max-w-full">
-          <span className="text-xs text-amber-200/40 flex items-center gap-1 mr-1">
-            <Volume2 className="w-3.5 h-3.5" /> Ru ngủ:
-          </span>
           <button
             onClick={() => (activeSound === 'brown' ? onStopSound() : onPlaySound('brown'))}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+            className={`h-11 px-4 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
               activeSound === 'brown'
-                ? 'bg-amber-500/20 border-amber-400/50 text-amber-200 shadow-md shadow-amber-500/10'
-                : 'bg-white/[0.03] border-white/5 text-slate-400 hover:text-amber-100 hover:border-amber-500/20'
+                ? 'bg-amber-500/25 border-amber-400 text-amber-200 shadow-md shadow-amber-500/20'
+                : 'bg-white/5 border-white/10 text-slate-300 hover:text-white'
             }`}
           >
             Nhiễu nâu
           </button>
           <button
             onClick={() => (activeSound === 'rain' ? onStopSound() : onPlaySound('rain'))}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all flex items-center gap-1 ${
+            className={`h-11 px-4 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
               activeSound === 'rain'
-                ? 'bg-amber-500/20 border-amber-400/50 text-amber-200 shadow-md shadow-amber-500/10'
-                : 'bg-white/[0.03] border-white/5 text-slate-400 hover:text-amber-100 hover:border-amber-500/20'
+                ? 'bg-amber-500/25 border-amber-400 text-amber-200 shadow-md shadow-amber-500/20'
+                : 'bg-white/5 border-white/10 text-slate-300 hover:text-white'
             }`}
           >
-            <CloudRain className="w-3 h-3" /> Mưa đêm
+            <CloudRain className="w-4 h-4" /> Mưa đêm
           </button>
           <button
             onClick={() => (activeSound === 'theta' ? onStopSound() : onPlaySound('theta'))}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all flex items-center gap-1 ${
+            className={`h-11 px-4 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
               activeSound === 'theta'
-                ? 'bg-amber-500/20 border-amber-400/50 text-amber-200 shadow-md shadow-amber-500/10'
-                : 'bg-white/[0.03] border-white/5 text-slate-400 hover:text-amber-100 hover:border-amber-500/20'
+                ? 'bg-amber-500/25 border-amber-400 text-amber-200 shadow-md shadow-amber-500/20'
+                : 'bg-white/5 border-white/10 text-slate-300 hover:text-white'
             }`}
           >
-            <Waves className="w-3 h-3" /> Sóng Theta
+            <Waves className="w-4 h-4" /> Sóng Theta
           </button>
           {activeSound && (
             <button
               onClick={onStopSound}
-              className="p-1.5 rounded-xl text-slate-500 hover:text-white"
+              className="w-11 h-11 rounded-xl bg-white/10 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer"
               title="Tắt âm"
             >
-              <VolumeX className="w-3.5 h-3.5" />
+              <VolumeX className="w-4 h-4" />
             </button>
           )}
         </div>
@@ -186,9 +183,9 @@ export function ZenSleepModal({
         {activeSleepStart && (
           <button
             onClick={handleWakeUpClick}
-            className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-semibold text-sm shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 transform active:scale-95 transition-all cursor-pointer"
+            className="w-full sm:w-auto h-14 px-8 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-extrabold text-base shadow-2xl shadow-amber-500/30 flex items-center justify-center gap-2 transform active:scale-95 transition-all cursor-pointer"
           >
-            <Sun className="w-4 h-4 text-slate-950 fill-current" />
+            <Sun className="w-5 h-5 text-slate-950 fill-current" />
             <span>Mặt trời lên • Tôi đã thức dậy</span>
           </button>
         )}

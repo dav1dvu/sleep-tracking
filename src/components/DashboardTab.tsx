@@ -12,7 +12,6 @@ import {
   AlertTriangle,
   CheckCircle2,
   Calendar,
-  Tag,
   Trash2,
   Edit2,
   Plus,
@@ -59,7 +58,6 @@ export function DashboardTab({
     setHeatmapDays(days);
   }, []);
 
-  // Lấy danh sách phiên cho biểu đồ xu hướng
   const trendSessions = [...sessions].slice(0, trendRange).reverse();
 
   // Phân tích thói quen tương quan
@@ -111,99 +109,109 @@ export function DashboardTab({
   const targetDiff = Number((avgHoursNum - targetHours).toFixed(1));
 
   return (
-    <div className="space-y-8 animate-fadeIn">
-      {/* Active Sleep Mode Tracker Banner */}
+    <div className="space-y-6 sm:space-y-8 animate-fadeIn pb-20 md:pb-8">
+      {/* Primary Action Card: Clear & Actionable */}
       {activeSleepStart ? (
-        <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-purple-950/60 via-indigo-950/50 to-slate-900 border border-purple-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl glow-indigo">
-          <div className="flex items-center gap-4 text-center sm:text-left">
-            <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center shrink-0">
-              <Moon className="w-6 h-6 text-purple-300 animate-pulse" />
-            </div>
-            <div>
-              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-200 border border-purple-500/30 mb-1">
-                <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
-                Đang theo dõi giấc ngủ trực tiếp
+        <div className="p-5 sm:p-7 rounded-3xl bg-gradient-to-r from-purple-950/70 via-indigo-950/60 to-slate-900 border border-purple-500/40 shadow-xl glow-indigo">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4 text-center sm:text-left">
+              <div className="w-14 h-14 rounded-2xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center shrink-0">
+                <Moon className="w-7 h-7 text-purple-300 animate-pulse" />
               </div>
-              <p className="text-xs text-slate-300">
-                Hệ thống đang ghi nhận thời gian ngủ. Nhấn vào để mở màn hình Zen hoặc thức dậy.
-              </p>
+              <div>
+                <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-purple-400 animate-ping" />
+                  <span className="text-sm font-bold text-purple-200 uppercase tracking-wide">
+                    Đang theo dõi giấc ngủ
+                  </span>
+                </div>
+                <p className="text-sm text-slate-300">
+                  Màn hình Zen đang chạy ngầm hoặc sẵn sàng khi bạn thức giấc.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <button
+                onClick={onOpenZenModal}
+                className="flex-1 sm:flex-none h-13 px-6 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-base transition-all shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+              >
+                <Sun className="w-5 h-5" />
+                <span>Mở Zen / Tôi đã dậy</span>
+              </button>
             </div>
           </div>
-          <button
-            onClick={onOpenZenModal}
-            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium text-sm transition-all shadow-lg shadow-purple-600/30 cursor-pointer"
-          >
-            Mở màn hình Zen
-          </button>
         </div>
       ) : (
-        <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-slate-900/90 via-indigo-950/30 to-slate-900/90 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+        <div className="p-5 sm:p-7 rounded-3xl bg-slate-900/90 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4 text-center sm:text-left">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
               <Moon className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-semibold text-white text-base">Chuẩn bị đi ngủ tối nay?</h3>
-              <p className="text-xs text-slate-400">
-                Bật bộ đếm ngủ 1 chạm với màn hình OLED tối tuyệt đối hoặc ghi nhận thủ công sáng mai.
+              <h3 className="font-bold text-white text-lg">Chuẩn bị ngủ tối nay?</h3>
+              <p className="text-sm text-slate-300">
+                1 chạm để bật đồng hồ Zen ban đêm hoặc ghi nhận giờ ngủ.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3 w-full sm:w-auto">
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
             <button
               onClick={onStartSleeping}
-              className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs sm:text-sm font-semibold transition-all shadow-lg shadow-indigo-600/20 cursor-pointer"
+              className="w-full sm:w-auto h-13 px-7 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-base font-bold shadow-lg shadow-indigo-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
             >
-              🌙 Bắt đầu ngủ ngay
+              <Moon className="w-5 h-5" />
+              <span>Bắt đầu ngủ (Zen)</span>
             </button>
             <button
               onClick={() => onOpenLogModal()}
-              className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 text-xs sm:text-sm font-medium transition-all cursor-pointer"
+              className="w-full sm:w-auto h-13 px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-slate-200 text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
             >
-              + Ghi nhận thủ công
+              <Plus className="w-4 h-4" />
+              <span>Ghi nhận hôm qua</span>
             </button>
           </div>
         </div>
       )}
 
-      {/* 4 Headline KPI Cards (kpi-dashboard-design pattern) */}
+      {/* 4 Headline KPIs: Large & Clear 2-Column Mobile Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
         {/* KPI 1: Thời lượng TB */}
-        <div className="glass-panel p-5 rounded-3xl relative overflow-hidden group hover:border-indigo-500/30 transition-all">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-3">
+        <div className="glass-panel p-5 rounded-3xl relative overflow-hidden">
+          <div className="flex items-center justify-between text-slate-400 text-sm font-medium mb-2">
             <span>Thời lượng TB</span>
             <Clock className="w-4 h-4 text-indigo-400" />
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="font-bold text-2xl sm:text-3xl text-white tracking-tight">
+            <span className="font-extrabold text-3xl sm:text-4xl text-white tracking-tight">
               {avgHoursNum > 0 ? `${avgHoursNum}h` : '--'}
             </span>
-            <span className="text-xs text-slate-400">/ {targetHours}h mục tiêu</span>
+            <span className="text-xs text-slate-400">/ {targetHours}h</span>
           </div>
-          <div className="mt-3 flex items-center gap-1.5 text-xs">
+          <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold">
             {targetDiff >= 0 ? (
-              <span className="text-emerald-400 font-semibold flex items-center">
-                <ArrowUpRight className="w-3.5 h-3.5" /> +{targetDiff}h
+              <span className="text-emerald-400 flex items-center">
+                <ArrowUpRight className="w-4 h-4" /> +{targetDiff}h
               </span>
             ) : (
-              <span className="text-rose-400 font-semibold flex items-center">
-                <ArrowDownRight className="w-3.5 h-3.5" /> {targetDiff}h
+              <span className="text-rose-400 flex items-center">
+                <ArrowDownRight className="w-4 h-4" /> {targetDiff}h
               </span>
             )}
-            <span className="text-slate-500">so với mục tiêu</span>
+            <span className="text-slate-400">so mục tiêu</span>
           </div>
-          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-all" />
         </div>
 
         {/* KPI 2: Nợ giấc ngủ */}
-        <div className="glass-panel p-5 rounded-3xl relative overflow-hidden group hover:border-purple-500/30 transition-all">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-3">
-            <span>Nợ giấc ngủ (7 ngày)</span>
+        <div className="glass-panel p-5 rounded-3xl relative overflow-hidden">
+          <div className="flex items-center justify-between text-slate-400 text-sm font-medium mb-2">
+            <span>Nợ giấc ngủ</span>
             <TrendingUp className="w-4 h-4 text-purple-400" />
           </div>
           <div className="flex items-baseline gap-2">
             <span
-              className={`font-bold text-2xl sm:text-3xl tracking-tight ${
+              className={`font-extrabold text-3xl sm:text-4xl tracking-tight ${
                 stats.sleepDebtHours > 2.0
                   ? 'text-rose-400'
                   : stats.sleepDebtHours > 0
@@ -214,184 +222,150 @@ export function DashboardTab({
               {stats.sleepDebtHours > 0 ? `-${stats.sleepDebtHours}h` : `+${Math.abs(stats.sleepDebtHours)}h`}
             </span>
           </div>
-          <div className="mt-3 flex items-center gap-1 text-xs">
+          <div className="mt-3 text-xs font-semibold">
             {stats.sleepDebtHours > 2.0 ? (
-              <span className="text-rose-400 font-medium flex items-center gap-1">
-                <AlertTriangle className="w-3.5 h-3.5" /> Cần bù ngủ 30p/tối
+              <span className="text-rose-400 flex items-center gap-1">
+                <AlertTriangle className="w-3.5 h-3.5" /> Cần bù 30p mỗi tối
               </span>
             ) : stats.sleepDebtHours > 0 ? (
-              <span className="text-amber-400 font-medium flex items-center gap-1">
-                Thiếu hụt nhẹ, dễ phục hồi
+              <span className="text-amber-400 flex items-center gap-1">
+                Thiếu ngủ nhẹ
               </span>
             ) : (
-              <span className="text-emerald-400 font-medium flex items-center gap-1">
+              <span className="text-emerald-400 flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Không có nợ ngủ
               </span>
             )}
           </div>
-          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-all" />
         </div>
 
-        {/* KPI 3: Chỉ số đều đặn (SRI) */}
-        <div className="glass-panel p-5 rounded-3xl relative overflow-hidden group hover:border-emerald-500/30 transition-all">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-3">
-            <span>Chỉ số đều đặn (SRI)</span>
+        {/* KPI 3: Chỉ số đều đặn */}
+        <div className="glass-panel p-5 rounded-3xl relative overflow-hidden">
+          <div className="flex items-center justify-between text-slate-400 text-sm font-medium mb-2">
+            <span>Độ đều đặn</span>
             <Sparkles className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="font-bold text-2xl sm:text-3xl text-emerald-300 tracking-tight">
+            <span className="font-extrabold text-3xl sm:text-4xl text-emerald-300 tracking-tight">
               {stats.regularityScore}%
             </span>
           </div>
-          <div className="mt-3 flex items-center gap-1 text-xs text-slate-400">
+          <div className="mt-3 text-xs font-semibold text-slate-300">
             {stats.regularityScore >= 80 ? (
-              <span className="text-emerald-400 font-medium">Nhịp sinh học rất vững</span>
+              <span className="text-emerald-400">Rất ổn định</span>
             ) : (
-              <span className="text-amber-400 font-medium">Lệch giờ cuối tuần</span>
+              <span className="text-amber-400">Lệch giờ cuối tuần</span>
             )}
-            <span className="text-slate-500">• {stats.chronotype}</span>
+            <span className="text-slate-400 ml-1.5">• {stats.chronotype}</span>
           </div>
-          <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all" />
         </div>
 
         {/* KPI 4: Năng lượng khi thức dậy */}
-        <div className="glass-panel p-5 rounded-3xl relative overflow-hidden group hover:border-amber-500/30 transition-all">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-3">
-            <span>Năng lượng thức dậy</span>
+        <div className="glass-panel p-5 rounded-3xl relative overflow-hidden">
+          <div className="flex items-center justify-between text-slate-400 text-sm font-medium mb-2">
+            <span>Năng lượng sáng</span>
             <BatteryCharging className="w-4 h-4 text-amber-400" />
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="font-bold text-2xl sm:text-3xl text-amber-300 tracking-tight">
+            <span className="font-extrabold text-3xl sm:text-4xl text-amber-300 tracking-tight">
               {stats.averageEnergy > 0 ? `${stats.averageEnergy}` : '--'}
             </span>
-            <span className="text-xs text-slate-400">/ 5.0</span>
+            <span className="text-xs text-slate-400">/ 5★</span>
           </div>
-          <div className="mt-3 flex items-center gap-1 text-xs text-slate-400">
-            <span className="text-amber-400 font-semibold">
-              {stats.averageEnergy >= 4.0 ? 'Sảng khoái cao' : 'Khá ổn định'}
+          <div className="mt-3 text-xs font-semibold text-amber-300">
+            {stats.averageEnergy >= 4.0 ? 'Sảng khoái cao' : 'Khá bình thường'}
+            <span className="text-slate-400 font-normal ml-1.5">
+              • Ngủ sau ~{stats.averageLatency}p
             </span>
-            <span className="text-slate-500">• Trằn trọc ~{stats.averageLatency}p</span>
           </div>
-          <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all" />
         </div>
       </div>
 
-      {/* Interactive Sleep Duration Bar Chart (High visual fidelity) */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl relative">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+      {/* Chart: Simplified & High Contrast for Mobile */}
+      <div className="glass-panel p-5 sm:p-7 rounded-3xl">
+        <div className="flex items-center justify-between gap-3 mb-6">
           <div>
-            <h3 className="font-semibold text-lg text-white flex items-center gap-2">
+            <h3 className="font-bold text-base sm:text-lg text-white flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-indigo-400" />
-              <span>Xu hướng thời lượng giấc ngủ</span>
+              <span>Biểu đồ thời lượng</span>
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Thời gian ngủ thực tế so với mốc chuẩn vàng {targetHours}h mỗi đêm
-            </p>
+            <p className="text-xs text-slate-400">Vạch đứt là mốc chuẩn {targetHours}h</p>
           </div>
 
-          <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-white/5 text-xs font-medium">
-            <button
-              onClick={() => setTrendRange(7)}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
-                trendRange === 7
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              7 ngày
-            </button>
-            <button
-              onClick={() => setTrendRange(14)}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
-                trendRange === 14
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              14 ngày
-            </button>
-            <button
-              onClick={() => setTrendRange(30)}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
-                trendRange === 30
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              30 ngày
-            </button>
+          <div className="flex items-center gap-1.5 bg-slate-900 p-1.5 rounded-2xl border border-white/10 text-xs font-bold">
+            {[7, 14, 30].map((days) => (
+              <button
+                key={days}
+                onClick={() => setTrendRange(days as any)}
+                className={`h-9 px-3.5 rounded-xl transition-colors cursor-pointer flex items-center justify-center ${
+                  trendRange === days
+                    ? 'bg-indigo-600 text-white'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                {days}N
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Chart Canvas Area */}
+        {/* Bars Container */}
         <div className="relative pt-6 pb-2">
           {/* Target 8h guideline */}
           <div
             className="absolute left-0 right-0 border-b border-dashed border-indigo-400/40 z-0 flex items-center justify-end pr-2 pointer-events-none"
             style={{ bottom: `${(targetHours / 10) * 100}%` }}
           >
-            <span className="text-[10px] text-indigo-300 font-mono bg-indigo-950/80 px-1.5 py-0.5 rounded border border-indigo-500/30">
-              Mục tiêu {targetHours}h
+            <span className="text-xs text-indigo-300 font-bold bg-indigo-950 px-2 py-0.5 rounded border border-indigo-500/30">
+              Chuẩn {targetHours}h
             </span>
           </div>
 
-          {/* Bars Container */}
-          <div className="flex items-end justify-between gap-2 sm:gap-3 h-52 sm:h-64 px-1">
+          <div className="flex items-end justify-between gap-2 h-48 sm:h-60 px-1">
             {trendSessions.map((session, idx) => {
               const hours = session.durationMinutes / 60;
-              const heightPercent = Math.min(100, Math.max(12, (hours / 10) * 100));
+              const heightPercent = Math.min(100, Math.max(15, (hours / 10) * 100));
               const isHovered = hoveredBarIndex === idx;
 
-              // Color gradient based on quality
-              let barColor = 'from-indigo-600 to-purple-600';
-              if (session.quality === 5) barColor = 'from-emerald-500 to-teal-400';
-              else if (session.quality === 4) barColor = 'from-indigo-500 to-purple-500';
-              else if (session.quality === 3) barColor = 'from-amber-500 to-orange-400';
-              else barColor = 'from-rose-600 to-rose-400';
+              let barColor = 'bg-indigo-500';
+              if (session.quality === 5) barColor = 'bg-emerald-500';
+              else if (session.quality === 4) barColor = 'bg-indigo-500';
+              else if (session.quality === 3) barColor = 'bg-amber-500';
+              else barColor = 'bg-rose-500';
 
               const dateLabel = new Date(session.date).toLocaleDateString('vi-VN', {
-                weekday: 'narrow',
                 day: 'numeric',
+                month: 'numeric',
               });
 
               return (
                 <div
                   key={session.id}
-                  className="flex-1 flex flex-col items-center h-full justify-end relative group cursor-pointer"
+                  className="flex-1 flex flex-col items-center h-full justify-end relative cursor-pointer"
                   onMouseEnter={() => setHoveredBarIndex(idx)}
                   onMouseLeave={() => setHoveredBarIndex(null)}
                   onClick={() => onOpenLogModal(session)}
                 >
-                  {/* Tooltip on Hover */}
                   {isHovered && (
-                    <div className="absolute -top-24 z-30 p-2.5 rounded-xl bg-slate-900 border border-white/20 shadow-2xl text-xs w-36 sm:w-44 pointer-events-none animate-fadeIn">
-                      <div className="font-semibold text-white mb-1 flex items-center justify-between">
+                    <div className="absolute -top-20 z-30 p-2.5 rounded-xl bg-slate-900 border border-white/20 shadow-2xl text-xs w-36 pointer-events-none">
+                      <div className="font-bold text-white flex justify-between">
                         <span>{session.date}</span>
-                        <span className="text-amber-400">★ {session.quality}/5</span>
+                        <span className="text-amber-400">★ {session.quality}</span>
                       </div>
-                      <div className="text-indigo-300 font-medium">
-                        {(session.durationMinutes / 60).toFixed(1)} giờ (
-                        {Math.floor(session.durationMinutes / 60)}h{session.durationMinutes % 60}m)
-                      </div>
-                      <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
-                        <Zap className="w-3 h-3 text-emerald-400" /> Năng lượng: {session.energyLevel}/5
+                      <div className="text-indigo-300 font-semibold mt-0.5">
+                        {hours.toFixed(1)} giờ
                       </div>
                     </div>
                   )}
 
-                  {/* Visual Bar */}
                   <div
-                    className={`w-full max-w-[36px] rounded-t-xl bg-gradient-to-t ${barColor} transition-all duration-300 relative ${
-                      isHovered ? 'brightness-125 scale-y-105 shadow-lg shadow-indigo-500/25' : 'opacity-85'
+                    className={`w-full max-w-[34px] rounded-t-xl ${barColor} transition-all ${
+                      isHovered ? 'brightness-125 scale-y-105' : 'opacity-90'
                     }`}
                     style={{ height: `${heightPercent}%` }}
-                  >
-                    {/* Top indicator dot */}
-                    <div className="w-1.5 h-1.5 rounded-full bg-white/60 mx-auto mt-1" />
-                  </div>
+                  />
 
-                  {/* Day Label */}
-                  <span className="text-[10px] sm:text-xs text-slate-400 font-medium mt-2 truncate w-full text-center">
+                  <span className="text-xs text-slate-400 font-medium mt-2">
                     {dateLabel}
                   </span>
                 </div>
@@ -401,262 +375,203 @@ export function DashboardTab({
         </div>
 
         {/* Legend */}
-        <div className="mt-6 pt-4 border-t border-white/5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
-          <div className="flex items-center gap-4">
+        <div className="mt-4 pt-4 border-t border-white/5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+          <div className="flex items-center gap-3">
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" /> 5★ Tuyệt hảo
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" /> 5★ Sâu
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" /> 4★ Ngon giấc
+              <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" /> 4★ Tốt
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> 3★ Bình thường
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> 3★ Vừa
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> 1-2★ Chập chờn
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> 1-2★ Kém
             </span>
           </div>
-          <span className="text-slate-500 italic">Nhấn vào cột để chỉnh sửa</span>
+          <span className="text-slate-500">Chạm cột để sửa</span>
         </div>
       </div>
 
-      {/* Correlation Factor Insights (Khoa học dữ liệu tương quan) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {/* Habits Correlation Cards: Clean & Punchy */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Boosters */}
-        <div className="glass-panel p-6 rounded-3xl border-emerald-500/20">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <div className="glass-panel p-5 rounded-3xl border-emerald-500/20">
+          <div className="flex items-center gap-2.5 mb-3">
+            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
               <Zap className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-white text-sm sm:text-base">
-                Thói quen mang lại năng lượng cao nhất
-              </h4>
-              <p className="text-xs text-slate-400">
-                Các yếu tố gắn liền với điểm phục hồi 4-5 sao của bạn
-              </p>
+              <h4 className="font-bold text-white text-base">Thói quen giúp ngủ ngon</h4>
+              <p className="text-xs text-slate-400">Được ghi nhận nhiều nhất</p>
             </div>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {boosters.length > 0 ? (
               boosters.map((b) => (
                 <div
                   key={b.id}
-                  className="flex items-center justify-between p-3 rounded-2xl bg-emerald-950/20 border border-emerald-500/20 text-xs"
+                  className="flex items-center justify-between p-3 rounded-2xl bg-emerald-950/30 border border-emerald-500/20 text-sm"
                 >
-                  <span className="text-emerald-200 font-medium">{b.name}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-slate-400">{b.count} lần</span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold">
-                      ★ {b.avgEnergy} NL
-                    </span>
-                  </div>
+                  <span className="text-emerald-200 font-semibold">{b.name}</span>
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-xs">
+                    ⚡ {b.avgEnergy}/5 NL
+                  </span>
                 </div>
               ))
             ) : (
-              <p className="text-xs text-slate-500 italic">
-                Ghi nhận thêm vài đêm có kèm tag thói quen để thuật toán phân tích tương quan.
-              </p>
+              <p className="text-xs text-slate-400 italic">Chưa đủ dữ liệu thói quen.</p>
             )}
           </div>
         </div>
 
         {/* Drains */}
-        <div className="glass-panel p-6 rounded-3xl border-rose-500/20">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
+        <div className="glass-panel p-5 rounded-3xl border-rose-500/20">
+          <div className="flex items-center gap-2.5 mb-3">
+            <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400">
               <AlertTriangle className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-white text-sm sm:text-base">
-                Thủ phạm gây hao tổn giấc ngủ
-              </h4>
-              <p className="text-xs text-slate-400">
-                Những tác nhân khiến bạn uể oải và trằn trọc nhất
-              </p>
+              <h4 className="font-bold text-white text-base">Tác nhân gây mệt mỏi</h4>
+              <p className="text-xs text-slate-400">Nên hạn chế buổi tối</p>
             </div>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {drains.length > 0 ? (
               drains.map((d) => (
                 <div
                   key={d.id}
-                  className="flex items-center justify-between p-3 rounded-2xl bg-rose-950/20 border border-rose-500/20 text-xs"
+                  className="flex items-center justify-between p-3 rounded-2xl bg-rose-950/30 border border-rose-500/20 text-sm"
                 >
-                  <span className="text-rose-200 font-medium">{d.name}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-slate-400">{d.count} lần</span>
-                    <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-semibold">
-                      ★ {d.avgEnergy} NL
-                    </span>
-                  </div>
+                  <span className="text-rose-200 font-semibold">{d.name}</span>
+                  <span className="px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 font-bold text-xs">
+                    ⚡ {d.avgEnergy}/5 NL
+                  </span>
                 </div>
               ))
             ) : (
-              <p className="text-xs text-slate-500 italic">
-                Chưa phát hiện thói quen tiêu cực lặp lại nhiều lần. Rất tốt!
-              </p>
+              <p className="text-xs text-slate-400 italic">Không có thói quen xấu nổi bật.</p>
             )}
           </div>
         </div>
       </div>
 
-      {/* 30-Day Sleep Heatmap Grid (GitHub style) */}
-      <div className="glass-panel p-6 rounded-3xl">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h4 className="font-semibold text-white text-sm sm:text-base flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-purple-400" />
-              <span>Bản đồ nhiệt giấc ngủ (30 ngày gần nhất)</span>
-            </h4>
-            <p className="text-xs text-slate-400">
-              Mỗi ô thể hiện mức độ đủ giấc của từng đêm
-            </p>
-          </div>
-        </div>
+      {/* 30-Day Heatmap Grid */}
+      <div className="glass-panel p-5 rounded-3xl">
+        <h4 className="font-bold text-white text-base mb-3 flex items-center gap-2">
+          <Calendar className="w-4 h-4 text-purple-400" />
+          <span>Bản đồ nhiệt 30 ngày qua</span>
+        </h4>
 
-        <div className="grid grid-cols-6 sm:grid-cols-10 md:grid-cols-15 gap-2">
+        <div className="grid grid-cols-6 sm:grid-cols-10 gap-2">
           {heatmapDays.map((dateStr) => {
             const dayNum = dateStr.split('-')[2];
             const session = sessions.find((s) => s.date === dateStr);
 
-            let bgClass = 'bg-slate-900 border-white/5';
-            let title = `${dateStr}: Chưa ghi nhận`;
+            let bgClass = 'bg-slate-900 border-white/5 text-slate-500';
+            let title = `${dateStr}: Chưa ghi`;
 
             if (session) {
               const h = session.durationMinutes / 60;
-              title = `${dateStr}: ${h.toFixed(1)}h (${session.quality}★)`;
-              if (h >= 8.0) bgClass = 'bg-emerald-500 border-emerald-400 shadow-sm shadow-emerald-500/20';
-              else if (h >= 7.0) bgClass = 'bg-indigo-500 border-indigo-400';
-              else if (h >= 6.0) bgClass = 'bg-purple-600/70 border-purple-500/40';
-              else bgClass = 'bg-rose-600/70 border-rose-500/40';
+              title = `${dateStr}: ${h.toFixed(1)}h`;
+              if (h >= 8.0) bgClass = 'bg-emerald-500 border-emerald-400 text-white font-bold';
+              else if (h >= 7.0) bgClass = 'bg-indigo-500 border-indigo-400 text-white font-semibold';
+              else if (h >= 6.0) bgClass = 'bg-purple-600 border-purple-500 text-white';
+              else bgClass = 'bg-rose-600 border-rose-500 text-white';
             }
 
             return (
-              <div
+              <button
                 key={dateStr}
                 title={title}
-                className={`h-9 rounded-xl border flex items-center justify-center text-[10px] font-mono transition-transform hover:scale-110 cursor-pointer ${bgClass}`}
+                className={`h-11 rounded-xl border flex items-center justify-center text-xs transition-transform active:scale-95 cursor-pointer ${bgClass}`}
                 onClick={() => {
                   if (session) onOpenLogModal(session);
                 }}
               >
-                <span className="text-white/80">{dayNum}</span>
-              </div>
+                <span>{dayNum}</span>
+              </button>
             );
           })}
         </div>
       </div>
 
       {/* Recent History Log List */}
-      <div className="glass-panel p-6 rounded-3xl">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-              <Layers className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="font-semibold text-white text-base">Nhật ký các đêm gần đây</h4>
-              <p className="text-xs text-slate-400">Xem lại chi tiết từng phiên và thói quen</p>
-            </div>
+      <div className="glass-panel p-5 sm:p-7 rounded-3xl">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2">
+            <Layers className="w-5 h-5 text-indigo-400" />
+            <h4 className="font-bold text-white text-base">Nhật ký các đêm gần đây</h4>
           </div>
           <button
             onClick={() => onOpenLogModal()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-slate-200 transition-colors"
+            className="h-10 px-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white transition-colors flex items-center gap-1.5 cursor-pointer"
           >
-            <Plus className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Thêm đêm ngủ</span>
+            <Plus className="w-4 h-4" />
+            <span>Thêm</span>
           </button>
         </div>
 
-        <div className="divide-y divide-white/5">
-          {sessions.slice(0, 7).map((s) => {
-            const [bH, bM] = [new Date(s.bedtime).getHours(), new Date(s.bedtime).getMinutes()];
-            const [wH, wM] = [new Date(s.wakeTime).getHours(), new Date(s.wakeTime).getMinutes()];
-            const timeFormat = `${String(bH).padStart(2, '0')}:${String(bM).padStart(2, '0')} → ${String(
-              wH
-            ).padStart(2, '0')}:${String(wM).padStart(2, '0')}`;
-
+        <div className="divide-y divide-white/10">
+          {sessions.slice(0, 6).map((s) => {
             const hours = Math.floor(s.durationMinutes / 60);
             const mins = s.durationMinutes % 60;
-            const cycles = (s.durationMinutes / 90).toFixed(1);
 
             return (
               <div
                 key={s.id}
-                className="py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 group hover:bg-white/[0.02] -mx-2 px-2 rounded-xl transition-colors"
+                className="py-3.5 flex items-center justify-between gap-3 group hover:bg-white/[0.02] -mx-2 px-2 rounded-xl transition-colors"
               >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-indigo-950/60 border border-indigo-500/20 flex flex-col items-center justify-center shrink-0">
-                    <span className="text-[10px] text-indigo-300 uppercase font-semibold">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-950/60 border border-indigo-500/20 flex flex-col items-center justify-center shrink-0">
+                    <span className="text-xs text-indigo-300 font-bold uppercase">
                       {new Date(s.date).toLocaleDateString('vi-VN', { weekday: 'short' })}
                     </span>
-                    <span className="font-bold text-xs text-white">
+                    <span className="font-extrabold text-sm text-white">
                       {new Date(s.date).getDate()}
                     </span>
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm text-white">
+                      <span className="font-bold text-base text-white">
                         {hours}h {mins > 0 ? `${mins}p` : ''}
                       </span>
-                      <span className="text-xs text-slate-400">({timeFormat})</span>
-                      <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-200 text-[10px] font-semibold">
-                        {cycles} chu kỳ
+                      <span className="text-amber-400 font-semibold text-xs">
+                        ★ {s.quality}/5
                       </span>
                     </div>
-                    {/* Tags List */}
-                    <div className="flex flex-wrap gap-1.5 mt-2">
-                      {s.tags.slice(0, 4).map((tId) => {
+                    <div className="flex flex-wrap gap-1.5 mt-1">
+                      {s.tags.slice(0, 2).map((tId) => {
                         const tagObj = SLEEP_TAGS.find((t) => t.id === tId);
                         return (
                           <span
                             key={tId}
-                            className={`text-[10px] px-2 py-0.5 rounded-lg border font-medium ${
-                              tagObj?.type === 'positive'
-                                ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-300'
-                                : tagObj?.type === 'negative'
-                                ? 'bg-rose-950/30 border-rose-500/30 text-rose-300'
-                                : 'bg-slate-900 border-white/10 text-slate-300'
-                            }`}
+                            className="text-xs px-2 py-0.5 rounded-md bg-slate-900 border border-white/10 text-slate-300 font-medium"
                           >
                             {tagObj?.label || tId}
                           </span>
                         );
                       })}
-                      {s.notes && (
-                        <span className="text-[10px] text-slate-400 italic truncate max-w-xs">
-                          "{s.notes}"
-                        </span>
-                      )}
                     </div>
                   </div>
                 </div>
 
-                {/* Right controls */}
-                <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-0 border-white/5 pt-2 sm:pt-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-amber-400 text-xs font-medium">★ {s.quality}/5</span>
-                    <span className="w-1 h-1 rounded-full bg-slate-700" />
-                    <span className="text-emerald-400 text-xs font-medium">⚡ {s.energyLevel}/5</span>
-                  </div>
-
-                  <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => onOpenLogModal(s)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
-                      title="Chỉnh sửa"
-                    >
-                      <Edit2 className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => onDeleteSession(s.id)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                      title="Xóa"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => onOpenLogModal(s)}
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                    title="Sửa"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => onDeleteSession(s.id)}
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                    title="Xóa"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             );

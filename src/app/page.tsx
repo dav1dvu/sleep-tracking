@@ -3,18 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   Moon,
-  Sparkles,
   Clock,
   Wind,
   Bot,
   Award,
-  Calendar,
-  Layers,
-  Heart,
-  ExternalLink,
-  ShieldCheck,
 } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
+import { BottomNav, TabType } from '@/components/BottomNav';
 import { DashboardTab } from '@/components/DashboardTab';
 import { CircadianTab } from '@/components/CircadianTab';
 import { RelaxTab } from '@/components/RelaxTab';
@@ -36,22 +31,19 @@ import { computeSleepStats } from '@/lib/circadian';
 import { soundEngine, SoundType } from '@/lib/audio-engine';
 import { CircadianProfile, SleepSession, SleepStats } from '@/types/sleep';
 
-type TabType = 'dashboard' | 'circadian' | 'relax' | 'aicoach' | 'wrapped';
-
 export default function HomePage() {
   const [sessions, setSessions] = useState<SleepSession[]>([]);
   const [profile, setProfile] = useState<CircadianProfile>(getCircadianProfile());
   const [activeSleepStart, setActiveSleepStartState] = useState<number | null>(null);
   const [activeSound, setActiveSound] = useState<SoundType | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
+  const [isMounted, setIsMounted] = useState<boolean>(false);
 
   // Modals state
   const [isLogModalOpen, setIsLogModalOpen] = useState<boolean>(false);
   const [editingSession, setEditingSession] = useState<SleepSession | null>(null);
   const [isZenModalOpen, setIsZenModalOpen] = useState<boolean>(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState<boolean>(false);
-
-  const [isMounted, setIsMounted] = useState<boolean>(false);
 
   // Initial client load
   useEffect(() => {
@@ -62,7 +54,6 @@ export default function HomePage() {
     setActiveSleepStartState(getActiveSleepStart());
   }, []);
 
-  // Compute sleep stats
   const stats: SleepStats = computeSleepStats(sessions, profile.targetHours);
 
   // Sound handlers
@@ -91,7 +82,6 @@ export default function HomePage() {
     setActiveSleepStartState(null);
     setIsZenModalOpen(false);
 
-    // Open log modal with prefilled timestamps
     setEditingSession(null);
     setIsLogModalOpen(true);
   };
@@ -113,12 +103,12 @@ export default function HomePage() {
     saveCircadianProfile(newProfile);
   };
 
-  const tabs: { id: TabType; label: string; icon: any; badge?: string }[] = [
-    { id: 'dashboard', label: 'Tổng Quan & Nhật Ký', icon: Moon },
-    { id: 'circadian', label: 'Chu Kỳ 90P & Curfew', icon: Clock },
-    { id: 'relax', label: 'Ru Ngủ & Hơi Thở 4-7-8', icon: Wind },
-    { id: 'aicoach', label: 'Bác Sĩ AI & Báo Cáo', icon: Bot, badge: 'Nemotron AI' },
-    { id: 'wrapped', label: 'Sleep Wrapped', icon: Award },
+  const desktopTabs: { id: TabType; label: string; icon: any; badge?: string }[] = [
+    { id: 'dashboard', label: 'Hôm nay & Nhật ký', icon: Moon },
+    { id: 'circadian', label: 'Chu kỳ 90P', icon: Clock },
+    { id: 'relax', label: 'Ru ngủ & Thở', icon: Wind },
+    { id: 'aicoach', label: 'Bác sĩ AI', icon: Bot, badge: 'Nemotron' },
+    { id: 'wrapped', label: 'Thẻ ngủ Wrapped', icon: Award },
   ];
 
   if (!isMounted) {
@@ -150,26 +140,26 @@ export default function HomePage() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
-        {/* Navigation Tabs Bar (Desktop + Mobile Scrollable) */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-white/5">
-          {tabs.map((tab) => {
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 space-y-6 pb-24 md:pb-8">
+        {/* Desktop-only Tab Switcher */}
+        <div className="hidden md:flex items-center gap-2 pb-2 border-b border-white/5">
+          {desktopTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all shrink-0 cursor-pointer ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-bold transition-all shrink-0 cursor-pointer ${
                   isActive
-                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/25 border border-indigo-400/30'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 border border-indigo-400/40'
                     : 'bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-white border border-white/5'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                 <span>{tab.label}</span>
                 {tab.badge && (
-                  <span className="hidden sm:inline-block px-1.5 py-0.2 rounded text-[10px] font-mono bg-purple-500/30 text-purple-200 border border-purple-400/40">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-purple-500/30 text-purple-200 border border-purple-400/40">
                     {tab.badge}
                   </span>
                 )}
@@ -179,7 +169,7 @@ export default function HomePage() {
         </div>
 
         {/* Tab Content Display */}
-        <div className="py-2">
+        <div className="py-1">
           {activeTab === 'dashboard' && (
             <DashboardTab
               sessions={sessions}
@@ -224,19 +214,22 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-white/5 bg-[#04060a] py-8 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      {/* Mobile Bottom Navigation Bar (Fixed for phone screens) */}
+      <BottomNav activeTab={activeTab} onSelectTab={setActiveTab} />
+
+      {/* Desktop Footer */}
+      <footer className="hidden md:block border-t border-white/5 bg-[#04060a] py-6 text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Moon className="w-4 h-4 text-indigo-400" />
-            <span className="font-semibold text-slate-300">Somna Intelligence</span>
+            <span className="font-bold text-slate-300">SOMNA</span>
             <span>• Nền tảng theo dõi giấc ngủ chuẩn khoa học y sinh</span>
           </div>
 
           <div className="flex items-center gap-4 text-slate-400">
-            <span>Dựa trên nghiên cứu Chu kỳ 90P & Melatonin</span>
+            <span>Chu kỳ 90 Phút & Curfew nhịp sinh học</span>
             <span>•</span>
-            <span>Mô hình AI: Nemotron 3 Ultra</span>
+            <span>AI: Nemotron 3 Ultra</span>
           </div>
         </div>
       </footer>

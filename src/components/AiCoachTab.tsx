@@ -8,12 +8,10 @@ import {
   User,
   CheckCircle2,
   AlertCircle,
-  ArrowRight,
   TrendingUp,
   Brain,
   Lightbulb,
   FileText,
-  RotateCcw,
 } from 'lucide-react';
 import { AiChatMessage, SleepSession, SleepStats, WeeklyAuditReport } from '@/types/sleep';
 
@@ -24,13 +22,12 @@ interface AiCoachTabProps {
 }
 
 export function AiCoachTab({ sessions, stats, targetHours }: AiCoachTabProps) {
-  // Chat state
   const [messages, setMessages] = useState<AiChatMessage[]>([
     {
       id: 'welcome',
       role: 'assistant',
       content:
-        'Xin chào! Tôi là **Dr. Somna**, trợ lý trí tuệ nhân tạo chuyên sâu về Y học Giấc ngủ & Nhịp sinh học (Chronobiology). Tôi nắm rõ dữ liệu giấc ngủ của bạn và sẵn sàng giải đáp mọi thắc mắc để giúp bạn thức dậy với 100% năng lượng mỗi sáng. Bạn muốn cải thiện điều gì hôm nay?',
+        'Xin chào! Tôi là **Dr. Somna**, trợ lý chuyên sâu về giấc ngủ. Tôi đã đọc các số liệu giấc ngủ gần đây của bạn. Bạn muốn tôi tư vấn hoặc cải thiện điều gì?',
       timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -42,10 +39,10 @@ export function AiCoachTab({ sessions, stats, targetHours }: AiCoachTabProps) {
   const [isGeneratingAudit, setIsGeneratingAudit] = useState<boolean>(false);
 
   const quickQuestions = [
-    'Tại sao ngủ 8h mà thức dậy vẫn uể oải?',
-    'Cách cắt cơn buồn ngủ lúc 14:00 chiều?',
-    'Nên uống cà phê cữ cuối lúc mấy giờ?',
-    'Làm sao để chìm vào giấc ngủ dưới 15 phút?',
+    'Tại sao ngủ 8 tiếng dậy vẫn mệt?',
+    'Cách cắt cơn buồn ngủ chiều?',
+    'Giờ uống cà phê cữ cuối?',
+    'Mẹo ngủ nhanh dưới 15 phút?',
   ];
 
   const handleSendMessage = async (textToSend?: string) => {
@@ -100,7 +97,7 @@ export function AiCoachTab({ sessions, stats, targetHours }: AiCoachTabProps) {
         id: `err_${Date.now()}`,
         role: 'assistant',
         content:
-          'Để duy trì năng lượng cao, hãy đảm bảo đón ánh nắng sáng tự nhiên trong 15 phút đầu tiên sau khi thức dậy để kích hoạt nhịp sinh học!',
+          'Để cơ thể hồi phục tối ưu, hãy cố gắng dậy cùng một giờ mỗi sáng và đón ánh nắng tự nhiên trong 15 phút đầu ngày nhé!',
         timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, errorReply]);
@@ -131,102 +128,83 @@ export function AiCoachTab({ sessions, stats, targetHours }: AiCoachTabProps) {
   };
 
   return (
-    <div className="space-y-8 animate-fadeIn">
-      {/* Intro Banner */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden">
-        <div className="max-w-2xl relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 mb-3">
-            <Brain className="w-3.5 h-3.5" />
-            NVIDIA Nemotron 3 Ultra 550B • OpenRouter
-          </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-            Bác Sĩ Giấc Ngủ AI & Báo Cáo Tuần Lâm Sàng
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
-            Mô hình AI đọc trực tiếp dữ liệu thói quen và các phiên ngủ thực tế của bạn để đưa ra
-            phác đồ cải thiện chuyên sâu, không lý thuyết suông.
-          </p>
-        </div>
-        <div className="absolute -top-12 -right-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="space-y-6 sm:space-y-8 animate-fadeIn pb-20 md:pb-8">
+      {/* Title */}
+      <div className="glass-panel p-5 sm:p-7 rounded-3xl">
+        <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+          Bác sĩ giấc ngủ AI
+        </h2>
+        <p className="text-sm text-slate-300 mt-1.5 leading-relaxed">
+          Tư vấn giải pháp phục hồi năng lượng dựa trên dữ liệu nhật ký thực tế của bạn.
+        </p>
       </div>
 
-      {/* Section 1: Weekly Sleep Audit Report */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/5">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
-              <FileText className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-white text-base">
-                Báo cáo tuần tự động (Clinical Weekly Audit)
-              </h3>
-              <p className="text-xs text-slate-400">
-                Tổng hợp tình trạng nợ ngủ, tính đều đặn và 3 hành động khắc phục
-              </p>
-            </div>
+      {/* Weekly Audit Section */}
+      <div className="glass-panel p-5 sm:p-7 rounded-3xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/10 mb-6">
+          <div>
+            <h3 className="font-bold text-lg text-white">Báo cáo đánh giá tuần</h3>
+            <p className="text-xs text-slate-400">Đánh giá điểm phục hồi và 3 lời khuyên tối nay</p>
           </div>
 
           <button
             onClick={handleGenerateAudit}
             disabled={isGeneratingAudit}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-purple-600/20 flex items-center justify-center gap-2 transition-all transform active:scale-95 disabled:opacity-50 cursor-pointer"
+            className="w-full sm:w-auto h-12 px-6 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-sm font-bold shadow-lg shadow-purple-600/25 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             {isGeneratingAudit ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>AI đang phân tích dữ liệu...</span>
+                <span>Đang phân tích...</span>
               </>
             ) : (
               <>
                 <Sparkles className="w-4 h-4" />
-                <span>{auditReport ? 'Phân tích lại tuần này' : 'Tạo báo cáo tuần ngay'}</span>
+                <span>{auditReport ? 'Phân tích lại tuần này' : 'Chấm điểm tuần này'}</span>
               </>
             )}
           </button>
         </div>
 
-        {/* Audit Report View */}
         {auditReport ? (
-          <div className="mt-6 space-y-6 animate-fadeIn">
-            {/* Headline and Score Box */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-purple-950/40 via-indigo-950/30 to-slate-900 border border-purple-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-5 animate-fadeIn">
+            {/* Score & Headline */}
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-950/70 to-slate-900 border border-purple-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <span className="text-xs uppercase font-semibold tracking-wider text-purple-300">
+                <span className="text-xs font-bold text-purple-300 uppercase tracking-wider">
                   {auditReport.chronotype}
                 </span>
-                <h4 className="font-bold text-lg sm:text-xl text-white mt-1">
+                <h4 className="font-extrabold text-lg sm:text-xl text-white mt-1">
                   {auditReport.headline}
                 </h4>
-                <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
+                <p className="text-sm text-slate-300 mt-2 leading-relaxed">
                   {auditReport.summary}
                 </p>
               </div>
 
-              <div className="shrink-0 flex items-center gap-3 bg-purple-900/30 p-4 rounded-2xl border border-purple-500/20">
-                <div className="text-center">
-                  <span className="text-[10px] text-purple-200 block uppercase font-medium">
+              <div className="shrink-0 flex items-center justify-center bg-purple-900/40 p-4 rounded-2xl border border-purple-500/30 text-center">
+                <div>
+                  <span className="text-xs text-purple-200 block font-bold uppercase">
                     Điểm phục hồi
                   </span>
-                  <span className="font-bold text-3xl sm:text-4xl text-purple-300 font-mono">
+                  <span className="font-mono text-4xl font-extrabold text-purple-300">
                     {auditReport.overallScore}
                   </span>
-                  <span className="text-[10px] text-slate-400 block">/ 100</span>
+                  <span className="text-xs text-slate-400 block">/ 100</span>
                 </div>
               </div>
             </div>
 
-            {/* Insights & Actions Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {/* Key Insights */}
-              <div className="p-5 rounded-2xl bg-slate-900/50 border border-white/5 space-y-3">
-                <h5 className="font-semibold text-sm text-indigo-300 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-indigo-400" />
-                  <span>Quan sát & Phát hiện y sinh</span>
+            {/* Insights & Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 rounded-2xl bg-slate-900/70 border border-white/10 space-y-2.5">
+                <h5 className="font-bold text-sm text-indigo-300 flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" />
+                  <span>Điểm cần lưu ý</span>
                 </h5>
-                <ul className="space-y-2.5">
+                <ul className="space-y-2">
                   {auditReport.keyInsights.map((insight, idx) => (
-                    <li key={idx} className="text-xs text-slate-300 flex items-start gap-2 leading-relaxed">
+                    <li key={idx} className="text-xs text-slate-300 flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 shrink-0" />
                       <span>{insight}</span>
                     </li>
@@ -234,15 +212,14 @@ export function AiCoachTab({ sessions, stats, targetHours }: AiCoachTabProps) {
                 </ul>
               </div>
 
-              {/* Recommended Micro-Habits */}
-              <div className="p-5 rounded-2xl bg-slate-900/50 border border-white/5 space-y-3">
-                <h5 className="font-semibold text-sm text-emerald-300 flex items-center gap-2">
-                  <Lightbulb className="w-4 h-4 text-emerald-400" />
-                  <span>3 Hành động vi mô tối nay</span>
+              <div className="p-4 rounded-2xl bg-slate-900/70 border border-white/10 space-y-2.5">
+                <h5 className="font-bold text-sm text-emerald-300 flex items-center gap-2">
+                  <Lightbulb className="w-4 h-4" />
+                  <span>3 Việc nên làm tối nay</span>
                 </h5>
-                <ul className="space-y-2.5">
+                <ul className="space-y-2">
                   {auditReport.recommendedActions.map((action, idx) => (
-                    <li key={idx} className="text-xs text-slate-300 flex items-start gap-2 leading-relaxed">
+                    <li key={idx} className="text-xs text-slate-300 flex items-start gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                       <span>{action}</span>
                     </li>
@@ -250,82 +227,66 @@ export function AiCoachTab({ sessions, stats, targetHours }: AiCoachTabProps) {
                 </ul>
               </div>
             </div>
-
-            {/* Debt Verdict */}
-            <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/20 flex items-center gap-3 text-xs text-amber-200">
-              <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>
-                <strong>Khuyến nghị nợ giấc ngủ:</strong> {auditReport.debtVerdict}
-              </span>
-            </div>
           </div>
         ) : (
-          <div className="py-12 text-center text-slate-400">
-            <Brain className="w-10 h-10 text-indigo-400/40 mx-auto mb-3" />
-            <p className="text-sm">Chưa có báo cáo tuần nào được tạo.</p>
-            <p className="text-xs text-slate-500 mt-1">
-              Nhấn nút "Tạo báo cáo tuần ngay" ở trên để AI tiến hành phân tích y sinh.
+          <div className="py-8 text-center text-slate-400">
+            <Brain className="w-10 h-10 text-indigo-400/40 mx-auto mb-2" />
+            <p className="text-sm font-medium">Chưa có báo cáo tuần.</p>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Bấm nút "Chấm điểm tuần này" ở trên để AI đánh giá ngay.
             </p>
           </div>
         )}
       </div>
 
-      {/* Section 2: Interactive AI Sleep Doctor Chat */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl">
-        <div className="flex items-center gap-2.5 pb-4 border-b border-white/5 mb-6">
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-            <Bot className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-white text-base">Hỏi đáp trực tiếp cùng Dr. Somna</h3>
-            <p className="text-xs text-slate-400">
-              Tư vấn giấc ngủ, mất ngủ, giải pháp caffeine, và các mẹo thư giãn thần kinh
-            </p>
-          </div>
+      {/* Interactive Chat */}
+      <div className="glass-panel p-5 sm:p-7 rounded-3xl">
+        <div className="flex items-center gap-2.5 pb-4 border-b border-white/10 mb-4">
+          <Bot className="w-5 h-5 text-indigo-400" />
+          <h3 className="font-bold text-white text-base">Hỏi đáp cùng Dr. Somna</h3>
         </div>
 
-        {/* Quick Question Chips */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-4">
-          <span className="text-xs text-slate-500 whitespace-nowrap">Gợi ý:</span>
+        {/* Quick Suggestion Chips: Comfortable 40px height */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-4 scrollbar-none">
           {quickQuestions.map((q, idx) => (
             <button
               key={idx}
               onClick={() => handleSendMessage(q)}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 border border-white/10 hover:border-indigo-500/40 text-xs text-slate-300 hover:text-white whitespace-nowrap transition-colors cursor-pointer"
+              className="h-10 px-4 rounded-xl bg-slate-900 border border-white/10 hover:border-indigo-400/50 text-xs text-slate-300 font-semibold whitespace-nowrap transition-colors cursor-pointer shrink-0 active:scale-95"
             >
               {q}
             </button>
           ))}
         </div>
 
-        {/* Message Thread */}
-        <div className="space-y-4 max-h-[420px] overflow-y-auto pr-2 mb-4">
+        {/* Messages */}
+        <div className="space-y-3.5 max-h-[380px] overflow-y-auto pr-1 mb-4">
           {messages.map((m) => (
             <div
               key={m.id}
               className={`flex gap-3 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {m.role === 'assistant' && (
-                <div className="w-8 h-8 rounded-xl bg-indigo-600/30 border border-indigo-500/30 text-indigo-300 flex items-center justify-center shrink-0 mt-1">
+                <div className="w-9 h-9 rounded-xl bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 flex items-center justify-center shrink-0 mt-1">
                   <Bot className="w-4 h-4" />
                 </div>
               )}
 
               <div
-                className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed ${
+                className={`max-w-[85%] rounded-2xl p-4 text-sm leading-relaxed ${
                   m.role === 'user'
-                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md'
-                    : 'bg-slate-900/90 border border-white/10 text-slate-200'
+                    ? 'bg-indigo-600 text-white font-medium shadow-md'
+                    : 'bg-slate-900 border border-white/10 text-slate-200'
                 }`}
               >
                 <div className="whitespace-pre-wrap">{m.content}</div>
-                <span className="text-[10px] text-slate-400 block text-right mt-1.5 opacity-70">
+                <span className="text-xs text-slate-400 block text-right mt-1.5 opacity-60">
                   {m.timestamp}
                 </span>
               </div>
 
               {m.role === 'user' && (
-                <div className="w-8 h-8 rounded-xl bg-purple-600/30 border border-purple-500/30 text-purple-300 flex items-center justify-center shrink-0 mt-1">
+                <div className="w-9 h-9 rounded-xl bg-purple-600/30 border border-purple-500/40 text-purple-300 flex items-center justify-center shrink-0 mt-1">
                   <User className="w-4 h-4" />
                 </div>
               )}
@@ -333,21 +294,15 @@ export function AiCoachTab({ sessions, stats, targetHours }: AiCoachTabProps) {
           ))}
 
           {isSending && (
-            <div className="flex gap-3 items-center">
-              <div className="w-8 h-8 rounded-xl bg-indigo-600/30 border border-indigo-500/30 text-indigo-300 flex items-center justify-center shrink-0">
-                <Bot className="w-4 h-4 animate-pulse" />
-              </div>
-              <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-white/10 flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" />
-                <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce delay-150" />
-                <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce delay-300" />
-              </div>
+            <div className="flex gap-2 items-center text-xs text-slate-400 p-2">
+              <Bot className="w-4 h-4 animate-pulse text-indigo-400" />
+              <span>Dr. Somna đang suy nghĩ câu trả lời...</span>
             </div>
           )}
         </div>
 
-        {/* Input Bar */}
-        <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+        {/* Big Input Bar */}
+        <div className="flex items-center gap-2">
           <input
             type="text"
             value={inputMessage}
@@ -355,16 +310,16 @@ export function AiCoachTab({ sessions, stats, targetHours }: AiCoachTabProps) {
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleSendMessage();
             }}
-            placeholder="Hỏi Dr. Somna về giấc ngủ của bạn (ví dụ: tối qua tôi ngủ hay thức giấc...)"
+            placeholder="Hỏi về giấc ngủ của bạn..."
             disabled={isSending}
-            className="flex-1 px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white text-xs sm:text-sm placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+            className="flex-1 h-13 px-4 rounded-2xl bg-slate-900 border border-white/10 text-white text-sm focus:outline-none focus:border-indigo-400"
           />
           <button
             onClick={() => handleSendMessage()}
             disabled={isSending || !inputMessage.trim()}
-            className="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-all disabled:opacity-50 flex items-center justify-center cursor-pointer shadow-lg shadow-indigo-600/20"
+            className="w-13 h-13 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white transition-all disabled:opacity-50 flex items-center justify-center cursor-pointer shadow-md shadow-indigo-600/25 shrink-0 active:scale-95"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-5 h-5" />
           </button>
         </div>
       </div>
