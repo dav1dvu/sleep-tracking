@@ -48,20 +48,31 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col bg-[#06080F] text-slate-100 selection:bg-indigo-500/30 selection:text-indigo-200`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col bg-[#070B18] text-slate-100 selection:bg-amber-500/30 selection:text-amber-200`}
       >
         {children}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').catch(function(err) {
-                    console.log('SW registration failed:', err);
+              if ('serviceWorker' in navigator) {
+                // Ensure existing workers are updated and old caches purged
+                if ('caches' in window) {
+                  caches.delete('somna-cache-v1');
+                }
+                if (window.location.protocol === 'https:') {
+                  window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                      reg.update();
+                    }).catch(function(err) {
+                      console.log('SW registration failed:', err);
+                    });
                   });
-                });
+                }
               }
             `,
           }}

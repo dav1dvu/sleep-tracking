@@ -8,6 +8,7 @@ import {
   Bot,
   Award,
   Plus,
+  RotateCw,
 } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { BottomNav, TabType } from '@/components/BottomNav';
@@ -19,6 +20,7 @@ import { SleepWrappedTab } from '@/components/SleepWrappedTab';
 import { ZenSleepModal } from '@/components/ZenSleepModal';
 import { LogSleepModal } from '@/components/LogSleepModal';
 import { SettingsModal } from '@/components/SettingsModal';
+import { StarryNightCanvas } from '@/components/StarryNightCanvas';
 import {
   getStoredSessions,
   saveSession,
@@ -126,7 +128,10 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-transparent text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
+    <div className="relative min-h-screen flex flex-col bg-transparent text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
+      {/* Dynamic Animated Starry Night Canvas Background */}
+      <StarryNightCanvas />
+
       {/* Top Fixed Navbar */}
       <Navbar
         onOpenLogModal={() => {
@@ -141,7 +146,7 @@ export default function HomePage() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 space-y-6 pb-24 md:pb-8">
+      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 space-y-6 pb-24 md:pb-8">
         {/* Desktop-only Tab Switcher */}
         <div className="hidden md:flex items-center gap-2 pb-2 border-b border-amber-400/15">
           {desktopTabs.map((tab) => {
@@ -238,19 +243,36 @@ export default function HomePage() {
       {/* Mobile Bottom Navigation Bar (Fixed for phone screens) */}
       <BottomNav activeTab={activeTab} onSelectTab={setActiveTab} />
 
-      {/* Desktop Footer */}
-      <footer className="hidden md:block border-t border-white/5 bg-[#04060a] py-6 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <Moon className="w-4 h-4 text-indigo-400" />
-            <span className="font-bold text-slate-300">SOMNA</span>
-            <span>• Nền tảng theo dõi giấc ngủ chuẩn khoa học y sinh</span>
+      {/* Starry Night Footer with Van Gogh Quote & Cache-Buster Action */}
+      <footer className="relative z-10 border-t border-amber-400/20 bg-[#050814]/90 backdrop-blur-md py-6 text-xs text-slate-400 pb-24 md:pb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
+            <div className="flex items-center gap-2">
+              <Moon className="w-4 h-4 text-amber-400" />
+              <span className="font-extrabold text-white tracking-wide">SOMNA</span>
+              <span className="text-amber-300 font-semibold">• The Starry Night (v2.0)</span>
+            </div>
+            <span className="text-slate-600 hidden sm:inline">•</span>
+            <span className="italic text-slate-400">
+              &ldquo;Ngắm nhìn những vì sao luôn khiến tôi mơ mộng.&rdquo; — Vincent van Gogh
+            </span>
           </div>
 
-          <div className="flex items-center gap-4 text-slate-400">
-            <span>Chu kỳ 90 Phút & Curfew nhịp sinh học</span>
-            <span>•</span>
-            <span>AI: Nemotron 3 Ultra</span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                if ('caches' in window) {
+                  caches.keys().then((names) => Promise.all(names.map((n) => caches.delete(n))));
+                }
+                window.location.reload();
+              }}
+              className="h-9 px-3.5 rounded-xl bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/30 text-amber-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+              title="Xóa cache và tải bản mới nhất từ Vercel"
+            >
+              <RotateCw className="w-3.5 h-3.5 text-amber-400" />
+              <span>Làm mới bản mới nhất</span>
+            </button>
+            <span className="text-slate-400 font-mono">Build 2026.11</span>
           </div>
         </div>
       </footer>

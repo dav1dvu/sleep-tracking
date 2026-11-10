@@ -161,10 +161,10 @@ export function Navbar({
             </button>
           )}
 
-          {/* Quick Log Sleep Button (Accessible on both Mobile & Desktop) */}
+          {/* Quick Log Sleep Button (Desktop - on mobile handled by floating FAB) */}
           <button
             onClick={onOpenLogModal}
-            className="flex items-center gap-1.5 px-3.5 sm:px-4 py-2 min-h-[44px] rounded-xl btn-starry-gold text-xs sm:text-sm shadow-md shadow-amber-500/25 transition-all cursor-pointer active:scale-95"
+            className="hidden sm:flex items-center gap-1.5 px-3.5 sm:px-4 py-2 min-h-[44px] rounded-xl btn-starry-gold text-xs sm:text-sm shadow-md shadow-amber-500/25 transition-all cursor-pointer active:scale-95"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
             <span className="font-extrabold">+ Ghi nhận</span>

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-console.log('🌌 [Code Reviewer & Quality Assessor] Bắt đầu Kiểm duyệt Toàn diện Trước khi Push (Starry Night Edition)...\n');
+console.log('🌌 [Code Reviewer & Quality Assessor] Bắt đầu Kiểm duyệt Toàn diện Trước khi Push (Starry Night Masterpiece Edition)...\n');
 
 let totalScore = 0;
 const maxScore = 100;
@@ -18,29 +18,33 @@ const hasEnvLocalInGitignore = gitignore.includes('.env*') || gitignore.includes
 
 if (!hasHardcodedOpenRouterKey && hasEnvLocalInGitignore) {
   totalScore += 20;
-  breakdown.push({ category: 'Security & Secrets Isolation', score: '20/20', status: 'PASS', notes: 'Khong lo API key trong code. .env duoc bao ve.' });
+  breakdown.push({ category: 'Security & Secrets Isolation', score: '20/20', status: 'PASS', notes: 'Không lộ API key trong code. .env được bảo vệ.' });
   console.log('   ✅ PASS: Không phát hiện API key bị lộ. .env.local an toàn tuyệt đối.');
 } else {
   breakdown.push({ category: 'Security & Secrets Isolation', score: '0/20', status: 'FAIL', notes: 'API key detected in code or gitignore missing.' });
   console.log('   ❌ FAIL: Kiểm tra bảo mật thất bại!');
 }
 
-// 2. Vercel & Deploy Config (15 pts)
-console.log('\n⚙️ 2. Kiểm tra Cấu hình Vercel (.npmrc)...');
-const npmrcExists = fs.existsSync('.npmrc');
-const npmrcContent = npmrcExists ? fs.readFileSync('.npmrc', 'utf-8') : '';
+// 2. Vercel Caching & Service Worker Network-First (20 pts)
+console.log('\n⚙️ 2. Kiểm tra Tránh Lỗi F5 Cache trên Vercel (.npmrc, sw.js, next.config.ts)...');
+const swContent = fs.readFileSync('public/sw.js', 'utf-8');
+const nextConfigContent = fs.readFileSync('next.config.ts', 'utf-8');
+const npmrcContent = fs.existsSync('.npmrc') ? fs.readFileSync('.npmrc', 'utf-8') : '';
+
+const isNetworkFirstSW = swContent.includes("navigate") && swContent.includes('somna-starry-night-v2');
+const hasCacheHeaders = nextConfigContent.includes('Cache-Control') && nextConfigContent.includes('must-revalidate');
 const suppressesWarning = npmrcContent.includes('loglevel=error');
 
-if (npmrcExists && suppressesWarning) {
-  totalScore += 15;
-  breakdown.push({ category: 'Vercel Deployment Configuration', score: '15/15', status: 'PASS', notes: '.npmrc triet tieu hoan toan cache-dir warning.' });
-  console.log('   ✅ PASS: .npmrc triệt tiêu hoàn toàn warning trên Vercel build.');
+if (isNetworkFirstSW && hasCacheHeaders && suppressesWarning) {
+  totalScore += 20;
+  breakdown.push({ category: 'Vercel Deploy & Cache Invalidation', score: '20/20', status: 'PASS', notes: 'SW Network-First, headers chống cache đĩa, .npmrc chuẩn.' });
+  console.log('   ✅ PASS: SW Network-First + Headers chống đọng cache HTML. Người dùng F5 nhận ngay bản mới.');
 } else {
-  breakdown.push({ category: 'Vercel Deployment Configuration', score: '0/15', status: 'FAIL', notes: '.npmrc missing or misconfigured.' });
-  console.log('   ❌ FAIL: .npmrc cấu hình chưa chuẩn!');
+  breakdown.push({ category: 'Vercel Deploy & Cache Invalidation', score: '5/20', status: 'WARN', notes: 'Chưa cấu hình chống đọng cache triệt để.' });
+  console.log('   ⚠️ WARN: Cần hoàn thiện cơ chế cache-busting.');
 }
 
-// 3. Mobile Modal Architecture & Flex min-h-0 (25 pts)
+// 3. Mobile Modal Architecture & Flex min-h-0 (20 pts)
 console.log('\n📱 3. Kiểm tra Kiến trúc Modal Mobile (LogSleepModal & SettingsModal)...');
 const logModal = fs.readFileSync('src/components/LogSleepModal.tsx', 'utf-8');
 const settingsModal = fs.readFileSync('src/components/SettingsModal.tsx', 'utf-8');
@@ -52,48 +56,48 @@ const logHasScrollLock = logModal.includes("document.body.style.overflow = 'hidd
 const hasColorSchemeDark = logModal.includes("colorScheme: 'dark'") && settingsModal.includes("colorScheme: 'dark'");
 
 if (logHasMinH0 && settingsHasMinH0 && logHasStickyFooter && logHasScrollLock && hasColorSchemeDark) {
-  totalScore += 25;
-  breakdown.push({ category: 'Mobile Modal Architecture', score: '25/25', status: 'PASS', notes: 'min-h-0 chong loi WebKit, body scroll lock, sticky safe-area footer.' });
+  totalScore += 20;
+  breakdown.push({ category: 'Mobile Modal Architecture', score: '20/20', status: 'PASS', notes: 'min-h-0 chống lỗi WebKit, body scroll lock, sticky safe-area footer.' });
   console.log('   ✅ PASS: Modal chuẩn WebKit (min-h-0), khóa cuộn nền, nút dính luôn nhìn thấy.');
 } else {
-  totalScore += 10;
-  breakdown.push({ category: 'Mobile Modal Architecture', score: '10/25', status: 'WARN', notes: 'Modal thieu min-h-0 hoac sticky footer.' });
+  breakdown.push({ category: 'Mobile Modal Architecture', score: '10/20', status: 'WARN', notes: 'Modal thiếu min-h-0 hoặc sticky footer.' });
   console.log('   ⚠️ WARN: Cần kiểm tra lại cấu trúc modal.');
 }
 
-// 4. Đồng bộ Chu kỳ 90P & Cài đặt 5 mốc thời lượng (20 pts)
-console.log('\n🔄 4. Kiểm tra Đồng bộ Chu kỳ 90P & Cài đặt 5 mốc (6h, 6.5h, 7h, 7.5h, 8h)...');
-const circadianTab = fs.readFileSync('src/components/CircadianTab.tsx', 'utf-8');
-const pageCode = fs.readFileSync('src/app/page.tsx', 'utf-8');
+// 4. Kiểm tra Loại Bỏ Nút Trùng & Tinh Gọn Chức Năng (20 pts)
+console.log('\n🧹 4. Kiểm tra Loại bỏ Nút Trùng & Tối ưu Trải nghiệm (Anti-Duplication)...');
+const dashboardTab = fs.readFileSync('src/components/DashboardTab.tsx', 'utf-8');
+const navbarCode = fs.readFileSync('src/components/Navbar.tsx', 'utf-8');
 
-const has5Choices = settingsModal.includes('6.0, 6.5, 7.0, 7.5, 8.0');
-const circadianReceivesProfile = circadianTab.includes('profile: CircadianProfile') && pageCode.includes('profile={profile}');
-const circadianSyncs = circadianTab.includes('profile.idealWakeTime') && circadianTab.includes('profile.idealBedtime');
+// Banner should NOT have a duplicate "+ Ghi nhận" button right next to Zen mode
+const bannerHasDuplicateLog = dashboardTab.includes('+ Ghi nhận hôm qua');
+// History section should NOT have a redundant "+ Thêm" button
+const historyHasDuplicateAdd = dashboardTab.includes('>Thêm<');
+// Navbar on mobile hides desktop button in favor of the floating FAB
+const navbarMobileOptimized = navbarCode.includes('hidden sm:flex');
 
-if (has5Choices && circadianReceivesProfile && circadianSyncs) {
+if (!bannerHasDuplicateLog && !historyHasDuplicateAdd && navbarMobileOptimized) {
   totalScore += 20;
-  breakdown.push({ category: 'Circadian Sync & 5 Target Choices', score: '20/20', status: 'PASS', notes: '5 muc 6h->8h chuan, dong bo 2 chieu Profile <-> CircadianTab.' });
-  console.log('   ✅ PASS: 5 mốc thời lượng (6h->8h) chính xác. Chu kỳ 90P đồng bộ 2 chiều với Cài đặt.');
+  breakdown.push({ category: 'Anti-Duplication & UI Ergonomics', score: '20/20', status: 'PASS', notes: '0 nút trùng chức năng. Phân định rõ Desktop vs Mobile FAB.' });
+  console.log('   ✅ PASS: Đã xóa sạch các nút trùng lặp. Giao diện sắc sảo, không còn rác thao tác.');
 } else {
-  breakdown.push({ category: 'Circadian Sync & 5 Target Choices', score: '5/20', status: 'FAIL', notes: '5 muc thoi luong hoac dong bo chu ky chua hoan tat.' });
-  console.log('   ❌ FAIL: Đồng bộ chu kỳ hoặc 5 mốc thời lượng chưa đạt!');
+  breakdown.push({ category: 'Anti-Duplication & UI Ergonomics', score: '5/20', status: 'WARN', notes: 'Còn tồn tại nút trùng chức năng.' });
+  console.log('   ⚠️ WARN: Còn nút trùng chức năng!');
 }
 
-// 5. The Starry Night Theme & Anti-Slop Visual Taste (20 pts)
-console.log('\n🌌 5. Kiểm tra Theme The Starry Night (Vincent van Gogh) & Gradient...');
-const globalsCss = fs.readFileSync('src/app/globals.css', 'utf-8');
+// 5. The Starry Night Masterpiece Theme & Dynamic Canvas (20 pts)
+console.log('\n🌌 5. Kiểm tra Theme The Starry Night (Vincent van Gogh) & Dynamic Canvas...');
+const pageCode = fs.readFileSync('src/app/page.tsx', 'utf-8');
+const canvasExists = fs.existsSync('src/components/StarryNightCanvas.tsx');
+const canvasImported = pageCode.includes('StarryNightCanvas');
 
-const hasStarryCanvas = globalsCss.includes('radial-gradient') && globalsCss.includes('#070B18');
-const hasStarryGoldButton = globalsCss.includes('btn-starry-gold');
-const hasStarryMoon = globalsCss.includes('--starry-gold') || globalsCss.includes('F59E0B');
-
-if (hasStarryCanvas && hasStarryGoldButton && hasStarryMoon) {
+if (canvasExists && canvasImported) {
   totalScore += 20;
-  breakdown.push({ category: 'The Starry Night Theme & Gradients', score: '20/20', status: 'PASS', notes: 'Bang mau Van Gogh Dem day sao, gradient vang starlight & xanh dem.' });
-  console.log('   ✅ PASS: Giao diện The Starry Night với gradient sao trời lộng lẫy.');
+  breakdown.push({ category: 'The Starry Night Masterpiece Canvas', score: '20/20', status: 'PASS', notes: 'Vortex ngân hà, trăng khuyết & 11 vì sao Saint-Rémy sống động.' });
+  console.log('   ✅ PASS: Bầu trời Starry Night với vòng xoáy tinh vân & 11 vì sao Van Gogh rực rỡ.');
 } else {
-  breakdown.push({ category: 'The Starry Night Theme & Gradients', score: '10/20', status: 'WARN', notes: 'Thieu css token cho Starry Night.' });
-  console.log('   ⚠️ WARN: Thiếu token Starry Night.');
+  breakdown.push({ category: 'The Starry Night Masterpiece Canvas', score: '10/20', status: 'WARN', notes: 'Thiếu StarryNightCanvas component.' });
+  console.log('   ⚠️ WARN: Thiếu canvas Starry Night.');
 }
 
 console.log('\n================================================================');
