@@ -7,6 +7,7 @@ import {
   Wind,
   Bot,
   Award,
+  Plus,
 } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { BottomNav, TabType } from '@/components/BottomNav';
@@ -113,19 +114,19 @@ export default function HomePage() {
 
   if (!isMounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#06080F] text-slate-400">
+      <div className="min-h-screen flex items-center justify-center bg-[#070B18] text-slate-400">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center shadow-lg shadow-indigo-500/10 animate-pulse">
-            <Moon className="w-6 h-6 text-indigo-400" />
+          <div className="w-12 h-12 rounded-2xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center shadow-lg shadow-amber-500/10 animate-pulse">
+            <Moon className="w-6 h-6 text-amber-400" />
           </div>
-          <span className="text-xs font-mono text-slate-500 tracking-widest">SOMNA INTELLIGENCE...</span>
+          <span className="text-xs font-mono text-amber-300/80 tracking-widest">SOMNA • STARRY NIGHT...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#06080F] text-slate-100 selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="min-h-screen flex flex-col bg-transparent text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
       {/* Top Fixed Navbar */}
       <Navbar
         onOpenLogModal={() => {
@@ -142,7 +143,7 @@ export default function HomePage() {
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 space-y-6 pb-24 md:pb-8">
         {/* Desktop-only Tab Switcher */}
-        <div className="hidden md:flex items-center gap-2 pb-2 border-b border-white/5">
+        <div className="hidden md:flex items-center gap-2 pb-2 border-b border-amber-400/15">
           {desktopTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -152,14 +153,16 @@ export default function HomePage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-bold transition-all shrink-0 cursor-pointer ${
                   isActive
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 border border-indigo-400/40'
-                    : 'bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-white border border-white/5'
+                    ? 'btn-starry-gold text-slate-950 shadow-md shadow-amber-500/20 border border-amber-300'
+                    : 'bg-[#0B1530]/70 hover:bg-[#0F1E44] text-slate-300 hover:text-white border border-white/10'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-slate-950' : 'text-amber-400'}`} />
                 <span>{tab.label}</span>
                 {tab.badge && (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-purple-500/30 text-purple-200 border border-purple-400/40">
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-mono border ${
+                    isActive ? 'bg-black/20 text-slate-950 border-black/30' : 'bg-purple-500/30 text-purple-200 border-purple-400/40'
+                  }`}>
                     {tab.badge}
                   </span>
                 )}
@@ -186,7 +189,12 @@ export default function HomePage() {
             />
           )}
 
-          {activeTab === 'circadian' && <CircadianTab />}
+          {activeTab === 'circadian' && (
+            <CircadianTab
+              profile={profile}
+              onUpdateProfile={handleSaveProfile}
+            />
+          )}
 
           {activeTab === 'relax' && (
             <RelaxTab
@@ -213,6 +221,19 @@ export default function HomePage() {
           )}
         </div>
       </main>
+
+      {/* Floating Action Button for Mobile (+ Ghi nhận luôn sẵn sàng) */}
+      <button
+        onClick={() => {
+          setEditingSession(null);
+          setIsLogModalOpen(true);
+        }}
+        className="md:hidden fixed bottom-20 right-4 z-40 w-13 h-13 rounded-2xl btn-starry-gold flex items-center justify-center shadow-xl shadow-amber-500/30 border border-amber-300 active:scale-95 transition-transform cursor-pointer"
+        aria-label="Ghi nhận giấc ngủ"
+        title="Ghi nhận giấc ngủ"
+      >
+        <Plus className="w-6 h-6 text-slate-950 stroke-[3]" />
+      </button>
 
       {/* Mobile Bottom Navigation Bar (Fixed for phone screens) */}
       <BottomNav activeTab={activeTab} onSelectTab={setActiveTab} />

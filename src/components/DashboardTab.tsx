@@ -143,13 +143,18 @@ export function DashboardTab({
           </div>
         </div>
       ) : (
-        <div className="p-5 sm:p-7 rounded-3xl bg-slate-900/90 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-5 sm:p-7 rounded-3xl bg-gradient-to-r from-[#0B1530] via-[#0F1E44] to-[#0A1329] border border-amber-400/25 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden">
           <div className="flex items-center gap-4 text-center sm:text-left">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center text-amber-400 shrink-0 shadow-sm shadow-amber-500/20">
               <Moon className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-white text-lg">Chuẩn bị ngủ tối nay?</h3>
+              <h3 className="font-bold text-white text-lg flex items-center gap-2 justify-center sm:justify-start">
+                <span>Chuẩn bị ngủ tối nay?</span>
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                  Starry Night
+                </span>
+              </h3>
               <p className="text-sm text-slate-300">
                 1 chạm để bật đồng hồ Zen ban đêm hoặc ghi nhận giờ ngủ.
               </p>
@@ -159,17 +164,17 @@ export function DashboardTab({
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
             <button
               onClick={onStartSleeping}
-              className="w-full sm:w-auto h-13 px-7 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-base font-bold shadow-lg shadow-indigo-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+              className="w-full sm:w-auto h-13 px-7 rounded-2xl bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 hover:from-indigo-500 hover:to-blue-500 text-white text-base font-bold shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
             >
-              <Moon className="w-5 h-5" />
+              <Moon className="w-5 h-5 text-amber-300" />
               <span>Bắt đầu ngủ (Zen)</span>
             </button>
             <button
               onClick={() => onOpenLogModal()}
-              className="w-full sm:w-auto h-13 px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-slate-200 text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+              className="w-full sm:w-auto h-13 px-5 rounded-2xl btn-starry-gold text-sm font-extrabold transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-lg shadow-amber-500/25"
             >
-              <Plus className="w-4 h-4" />
-              <span>Ghi nhận hôm qua</span>
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>+ Ghi nhận hôm qua</span>
             </button>
           </div>
         </div>

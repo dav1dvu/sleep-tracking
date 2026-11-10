@@ -30,6 +30,15 @@ export function ZenSleepModal({
   const [breathPacing, setBreathPacing] = useState<boolean>(true);
 
   useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (!isOpen) return;
 
     const timer = setInterval(() => {

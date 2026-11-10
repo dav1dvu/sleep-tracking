@@ -20,7 +20,7 @@ export function BottomNav({ activeTab, onSelectTab }: BottomNavProps) {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#06080F]/95 backdrop-blur-xl border-t border-white/10 pb-[env(safe-area-inset-bottom,0px)]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070B18]/95 backdrop-blur-xl border-t border-amber-400/20 pb-[env(safe-area-inset-bottom,0px)]">
       <div className="grid grid-cols-5 h-16 max-w-lg mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -31,14 +31,14 @@ export function BottomNav({ activeTab, onSelectTab }: BottomNavProps) {
               key={item.id}
               onClick={() => onSelectTab(item.id)}
               className={`flex flex-col items-center justify-center gap-1 w-full h-full min-h-[48px] transition-colors relative cursor-pointer select-none active:scale-95 ${
-                isActive ? 'text-indigo-400' : 'text-slate-400 hover:text-slate-200'
+                isActive ? 'text-amber-300' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               {isActive && (
-                <span className="absolute top-0 w-8 h-1 rounded-full bg-indigo-500 shadow-sm shadow-indigo-500/50" />
+                <span className="absolute top-0 w-8 h-1 rounded-full bg-amber-400 shadow-sm shadow-amber-400/80" />
               )}
-              <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : 'stroke-2'}`} />
-              <span className={`text-xs ${isActive ? 'font-bold text-white' : 'font-medium'}`}>
+              <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5] text-amber-400' : 'stroke-2'}`} />
+              <span className={`text-xs ${isActive ? 'font-bold text-amber-200' : 'font-medium'}`}>
                 {item.label}
               </span>
             </button>
