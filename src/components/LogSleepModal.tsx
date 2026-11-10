@@ -137,6 +137,11 @@ export function LogSleepModal({
     }
   };
 
+  const applyPreset = (bed: string, wake: string) => {
+    setBedtimeTime(bed);
+    setWakeTimeTime(wake);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -185,12 +190,14 @@ export function LogSleepModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto animate-fadeIn">
-      <div className="relative w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-[#0B0F19] border border-white/10 shadow-2xl p-5 sm:p-7 text-slate-100">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/10">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-sm overscroll-contain animate-fadeIn">
+      {/* Modal Container: Flex column with fixed header & sticky footer for mobile */}
+      <div className="relative w-full max-w-lg max-h-[92dvh] sm:max-h-[88vh] flex flex-col rounded-t-[28px] sm:rounded-3xl bg-[#0B0F19] border border-white/10 shadow-2xl overflow-hidden overscroll-contain text-slate-100">
+        
+        {/* Sticky Header */}
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-white/10 shrink-0 bg-[#0B0F19]">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/25 text-indigo-400 flex items-center justify-center">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
@@ -198,19 +205,49 @@ export function LogSleepModal({
                 {editingSession ? 'Chỉnh sửa giấc ngủ' : 'Ghi nhận giấc ngủ'}
               </h3>
               <p className="text-xs text-slate-400">
-                Lưu lại giờ ngủ và thói quen
+                Lưu lại thời lượng & thói quen
               </p>
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="w-11 h-11 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5 mt-5">
+        {/* Scrollable Form Body */}
+        <form id="log-sleep-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 overscroll-contain">
+          {/* Quick Presets for Mobile */}
+          <div>
+            <span className="block text-xs font-bold text-slate-400 mb-2">Chọn nhanh giờ phổ biến:</span>
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+              <button
+                type="button"
+                onClick={() => applyPreset('23:00', '07:00')}
+                className="h-10 px-3.5 rounded-xl bg-slate-900 border border-white/10 hover:border-indigo-400/50 text-xs font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors shrink-0 cursor-pointer"
+              >
+                🌙 23:00 → 07:00 (8h)
+              </button>
+              <button
+                type="button"
+                onClick={() => applyPreset('22:30', '06:30')}
+                className="h-10 px-3.5 rounded-xl bg-slate-900 border border-white/10 hover:border-indigo-400/50 text-xs font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors shrink-0 cursor-pointer"
+              >
+                ✨ 22:30 → 06:30 (8h)
+              </button>
+              <button
+                type="button"
+                onClick={() => applyPreset('00:00', '07:30')}
+                className="h-10 px-3.5 rounded-xl bg-slate-900 border border-white/10 hover:border-indigo-400/50 text-xs font-semibold text-slate-300 hover:text-white whitespace-nowrap transition-colors shrink-0 cursor-pointer"
+              >
+                🦉 00:00 → 07:30 (7.5h)
+              </button>
+            </div>
+          </div>
+
           {/* Date Picker */}
           <div>
             <label className="block text-xs font-bold text-slate-300 mb-2 flex items-center gap-1.5">
@@ -221,6 +258,7 @@ export function LogSleepModal({
               value={date}
               onChange={(e) => setDate(e.target.value)}
               required
+              style={{ colorScheme: 'dark' }}
               className="w-full h-12 px-4 rounded-xl bg-slate-900 border border-white/10 text-white text-base font-medium focus:outline-none focus:border-indigo-500"
             />
           </div>
@@ -236,6 +274,7 @@ export function LogSleepModal({
                 value={bedtimeTime}
                 onChange={(e) => setBedtimeTime(e.target.value)}
                 required
+                style={{ colorScheme: 'dark' }}
                 className="w-full h-12 px-3 sm:px-4 rounded-xl bg-slate-900 border border-white/10 text-white font-mono text-base font-bold focus:outline-none focus:border-indigo-500 text-center"
               />
             </div>
@@ -248,6 +287,7 @@ export function LogSleepModal({
                 value={wakeTimeTime}
                 onChange={(e) => setWakeTimeTime(e.target.value)}
                 required
+                style={{ colorScheme: 'dark' }}
                 className="w-full h-12 px-3 sm:px-4 rounded-xl bg-slate-900 border border-white/10 text-white font-mono text-base font-bold focus:outline-none focus:border-indigo-500 text-center"
               />
             </div>
@@ -378,7 +418,7 @@ export function LogSleepModal({
             <label className="block text-xs font-bold text-slate-300 mb-2">
               Thói quen tác động tối qua:
             </label>
-            <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1">
+            <div className="flex flex-wrap gap-2">
               {SLEEP_TAGS.map((tag) => {
                 const isSelected = selectedTags.includes(tag.id);
                 const IconComponent = TAG_ICONS[tag.icon] || Sparkles;
@@ -387,14 +427,14 @@ export function LogSleepModal({
                     type="button"
                     key={tag.id}
                     onClick={() => toggleTag(tag.id)}
-                    className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px] ${
                       isSelected
                         ? tag.type === 'positive'
                           ? 'bg-emerald-500/25 border-emerald-500 text-emerald-200'
                           : tag.type === 'negative'
                           ? 'bg-rose-500/25 border-rose-500 text-rose-200'
                           : 'bg-indigo-500/25 border-indigo-500 text-indigo-200'
-                        : 'bg-slate-900 border-white/10 text-slate-300'
+                        : 'bg-slate-900 border-white/10 text-slate-300 hover:text-white'
                     }`}
                   >
                     <IconComponent className="w-4 h-4" />
@@ -419,24 +459,25 @@ export function LogSleepModal({
               className="w-full p-3 rounded-xl bg-slate-900 border border-white/10 text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-indigo-500"
             />
           </div>
-
-          {/* Buttons: Large 48px height */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
-            <button
-              type="button"
-              onClick={onClose}
-              className="h-12 px-5 rounded-2xl border border-white/10 text-slate-300 hover:bg-white/5 text-sm font-semibold transition-colors cursor-pointer"
-            >
-              Hủy
-            </button>
-            <button
-              type="submit"
-              className="h-12 px-7 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold shadow-lg shadow-indigo-600/30 transition-all cursor-pointer active:scale-95"
-            >
-              Lưu giấc ngủ
-            </button>
-          </div>
         </form>
+
+        {/* Sticky Modal Footer: ALWAYS visible on mobile, above safe-area */}
+        <div className="sticky bottom-0 z-20 flex items-center justify-end gap-3 p-4 sm:p-5 border-t border-white/10 bg-[#0B0F19]/95 backdrop-blur-md pb-[max(1rem,env(safe-area-inset-bottom))] shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-12 px-5 rounded-2xl border border-white/10 text-slate-300 hover:bg-white/5 text-sm font-semibold transition-colors cursor-pointer"
+          >
+            Hủy
+          </button>
+          <button
+            type="submit"
+            form="log-sleep-form"
+            className="h-12 px-7 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold shadow-lg shadow-indigo-600/30 transition-all cursor-pointer active:scale-95"
+          >
+            Lưu giấc ngủ
+          </button>
+        </div>
       </div>
     </div>
   );
