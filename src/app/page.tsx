@@ -45,6 +45,10 @@ export default function HomePage() {
   // Modals state
   const [isLogModalOpen, setIsLogModalOpen] = useState<boolean>(false);
   const [editingSession, setEditingSession] = useState<SleepSession | null>(null);
+  const [initialSleepTimes, setInitialSleepTimes] = useState<{
+    bedtime: string;
+    wakeTime: string;
+  } | null>(null);
   const [isZenModalOpen, setIsZenModalOpen] = useState<boolean>(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState<boolean>(false);
 
@@ -85,7 +89,31 @@ export default function HomePage() {
     setActiveSleepStartState(null);
     setIsZenModalOpen(false);
 
+    setInitialSleepTimes({
+      bedtime: new Date(bedtimeMs).toISOString(),
+      wakeTime: new Date(wakeTimeMs).toISOString(),
+    });
     setEditingSession(null);
+    setIsLogModalOpen(true);
+  };
+
+  const handleTriggerLogModal = (sessionToEdit?: SleepSession | null) => {
+    if (sessionToEdit) {
+      setEditingSession(sessionToEdit);
+      setInitialSleepTimes(null);
+    } else if (activeSleepStart) {
+      const now = Date.now();
+      setInitialSleepTimes({
+        bedtime: new Date(activeSleepStart).toISOString(),
+        wakeTime: new Date(now).toISOString(),
+      });
+      setActiveSleepStart(null);
+      setActiveSleepStartState(null);
+      setEditingSession(null);
+    } else {
+      setEditingSession(null);
+      setInitialSleepTimes(null);
+    }
     setIsLogModalOpen(true);
   };
 
@@ -134,10 +162,7 @@ export default function HomePage() {
 
       {/* Top Fixed Navbar */}
       <Navbar
-        onOpenLogModal={() => {
-          setEditingSession(null);
-          setIsLogModalOpen(true);
-        }}
+        onOpenLogModal={() => handleTriggerLogModal()}
         onOpenZenModal={() => setIsZenModalOpen(true)}
         onOpenSettingsModal={() => setIsSettingsModalOpen(true)}
         activeSleepTime={activeSleepStart}
@@ -183,13 +208,11 @@ export default function HomePage() {
               sessions={sessions}
               stats={stats}
               targetHours={profile.targetHours}
-              onOpenLogModal={(sessionToEdit) => {
-                setEditingSession(sessionToEdit || null);
-                setIsLogModalOpen(true);
-              }}
+              onOpenLogModal={handleTriggerLogModal}
               onOpenZenModal={() => setIsZenModalOpen(true)}
               activeSleepStart={activeSleepStart}
               onStartSleeping={handleStartSleeping}
+              onWakeUp={handleWakeUp}
               onDeleteSession={handleDeleteSession}
             />
           )}
@@ -229,10 +252,7 @@ export default function HomePage() {
 
       {/* Floating Action Button for Mobile (+ Ghi nhận luôn sẵn sàng) */}
       <button
-        onClick={() => {
-          setEditingSession(null);
-          setIsLogModalOpen(true);
-        }}
+        onClick={() => handleTriggerLogModal()}
         className="md:hidden fixed bottom-20 right-4 z-40 w-13 h-13 rounded-2xl btn-starry-gold flex items-center justify-center shadow-xl shadow-amber-500/30 border border-amber-300 active:scale-95 transition-transform cursor-pointer"
         aria-label="Ghi nhận giấc ngủ"
         title="Ghi nhận giấc ngủ"
@@ -294,9 +314,12 @@ export default function HomePage() {
         onClose={() => {
           setIsLogModalOpen(false);
           setEditingSession(null);
+          setInitialSleepTimes(null);
         }}
         onSave={handleSaveSession}
         editingSession={editingSession}
+        initialBedtime={initialSleepTimes?.bedtime}
+        initialWakeTime={initialSleepTimes?.wakeTime}
       />
 
       <SettingsModal

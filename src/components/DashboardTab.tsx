@@ -30,6 +30,7 @@ interface DashboardTabProps {
   onOpenZenModal: () => void;
   activeSleepStart: number | null;
   onStartSleeping: () => void;
+  onWakeUp?: (bedtimeMs: number, wakeTimeMs: number) => void;
   onDeleteSession: (id: string) => void;
 }
 
@@ -41,6 +42,7 @@ export function DashboardTab({
   onOpenZenModal,
   activeSleepStart,
   onStartSleeping,
+  onWakeUp,
   onDeleteSession,
 }: DashboardTabProps) {
   const [trendRange, setTrendRange] = useState<7 | 14 | 30>(7);
@@ -131,13 +133,26 @@ export function DashboardTab({
               </div>
             </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+              <button
+                onClick={() => {
+                  if (onWakeUp && activeSleepStart) {
+                    onWakeUp(activeSleepStart, Date.now());
+                  } else {
+                    onOpenZenModal();
+                  }
+                }}
+                className="w-full sm:w-auto h-13 px-6 rounded-2xl btn-starry-gold text-slate-950 font-extrabold text-sm sm:text-base transition-all shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer active:scale-95 border border-amber-300"
+              >
+                <Sun className="w-5 h-5 text-slate-950 fill-current" />
+                <span>Tôi đã thức dậy (Ghi nhận)</span>
+              </button>
               <button
                 onClick={onOpenZenModal}
-                className="flex-1 sm:flex-none h-13 px-6 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-base transition-all shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                className="w-full sm:w-auto h-13 px-5 rounded-2xl bg-purple-900/60 hover:bg-purple-800/80 text-purple-200 border border-purple-400/40 font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
               >
-                <Sun className="w-5 h-5" />
-                <span>Mở Zen / Tôi đã dậy</span>
+                <Moon className="w-4 h-4 text-purple-300" />
+                <span>Mở Zen Clock</span>
               </button>
             </div>
           </div>

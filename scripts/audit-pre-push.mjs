@@ -44,24 +44,27 @@ if (isNetworkFirstSW && hasCacheHeaders && suppressesWarning) {
   console.log('   ⚠️ WARN: Cần hoàn thiện cơ chế cache-busting.');
 }
 
-// 3. Mobile Modal Architecture & Flex min-h-0 (20 pts)
-console.log('\n📱 3. Kiểm tra Kiến trúc Modal Mobile (LogSleepModal & SettingsModal)...');
+// 3. Mobile Modal Architecture & Auto-Population (20 pts)
+console.log('\n📱 3. Kiểm tra Kiến trúc Modal Mobile & Tự động điền Giờ ngủ/Thức dậy...');
 const logModal = fs.readFileSync('src/components/LogSleepModal.tsx', 'utf-8');
 const settingsModal = fs.readFileSync('src/components/SettingsModal.tsx', 'utf-8');
+const pageFile = fs.readFileSync('src/app/page.tsx', 'utf-8');
 
 const logHasMinH0 = logModal.includes('min-h-0');
 const settingsHasMinH0 = settingsModal.includes('min-h-0');
 const logHasStickyFooter = logModal.includes('sticky bottom-0') && logModal.includes('safe-area-inset-bottom');
 const logHasScrollLock = logModal.includes("document.body.style.overflow = 'hidden'");
 const hasColorSchemeDark = logModal.includes("colorScheme: 'dark'") && settingsModal.includes("colorScheme: 'dark'");
+const hasAutoFillLogic = logModal.includes('initialBedtime') && logModal.includes('initialWakeTime') && logModal.includes('isAutoFilled');
+const pageWiresAutoFill = pageFile.includes('initialBedtime={initialSleepTimes?.bedtime}') && pageFile.includes('initialWakeTime={initialSleepTimes?.wakeTime}');
 
-if (logHasMinH0 && settingsHasMinH0 && logHasStickyFooter && logHasScrollLock && hasColorSchemeDark) {
+if (logHasMinH0 && settingsHasMinH0 && logHasStickyFooter && logHasScrollLock && hasColorSchemeDark && hasAutoFillLogic && pageWiresAutoFill) {
   totalScore += 20;
-  breakdown.push({ category: 'Mobile Modal Architecture', score: '20/20', status: 'PASS', notes: 'min-h-0 chống lỗi WebKit, body scroll lock, sticky safe-area footer.' });
-  console.log('   ✅ PASS: Modal chuẩn WebKit (min-h-0), khóa cuộn nền, nút dính luôn nhìn thấy.');
+  breakdown.push({ category: 'Mobile Modal & Auto-Population', score: '20/20', status: 'PASS', notes: 'min-h-0 WebKit, sticky safe-area footer, tự động điền giờ ngủ & thức dậy.' });
+  console.log('   ✅ PASS: Modal chuẩn WebKit (min-h-0), khóa cuộn nền, tự động điền giờ ngủ & thức dậy chuẩn xác.');
 } else {
-  breakdown.push({ category: 'Mobile Modal Architecture', score: '10/20', status: 'WARN', notes: 'Modal thiếu min-h-0 hoặc sticky footer.' });
-  console.log('   ⚠️ WARN: Cần kiểm tra lại cấu trúc modal.');
+  breakdown.push({ category: 'Mobile Modal & Auto-Population', score: '10/20', status: 'WARN', notes: 'Modal thiếu min-h-0 hoặc chưa tự động điền giờ ngủ.' });
+  console.log('   ⚠️ WARN: Cần kiểm tra lại cấu trúc modal hoặc cơ chế tự động điền.');
 }
 
 // 4. Kiểm tra Loại Bỏ Nút Trùng & Tinh Gọn Chức Năng (20 pts)

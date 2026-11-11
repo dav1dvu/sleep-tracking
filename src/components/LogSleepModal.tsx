@@ -51,6 +51,13 @@ const TAG_ICONS: Record<string, any> = {
   Shield,
 };
 
+function formatLocalDate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 export function LogSleepModal({
   isOpen,
   onClose,
@@ -62,6 +69,7 @@ export function LogSleepModal({
   const [date, setDate] = useState<string>('');
   const [bedtimeTime, setBedtimeTime] = useState<string>('23:00');
   const [wakeTimeTime, setWakeTimeTime] = useState<string>('07:00');
+  const [isAutoFilled, setIsAutoFilled] = useState<boolean>(false);
   const [quality, setQuality] = useState<number>(4);
   const [energyLevel, setEnergyLevel] = useState<number>(4);
   const [latencyMinutes, setLatencyMinutes] = useState<number>(15);
@@ -82,6 +90,7 @@ export function LogSleepModal({
 
   useEffect(() => {
     if (editingSession) {
+      setIsAutoFilled(false);
       setDate(editingSession.date);
       const b = new Date(editingSession.bedtime);
       const w = new Date(editingSession.wakeTime);
@@ -99,21 +108,22 @@ export function LogSleepModal({
       setDreamNotes(editingSession.dreamNotes || '');
       setShowAdvanced(true);
     } else {
-      const now = new Date();
-      setDate(now.toISOString().split('T')[0]);
-
       if (initialBedtime && initialWakeTime) {
         const b = new Date(initialBedtime);
         const w = new Date(initialWakeTime);
+        setDate(formatLocalDate(b));
         setBedtimeTime(
           `${String(b.getHours()).padStart(2, '0')}:${String(b.getMinutes()).padStart(2, '0')}`
         );
         setWakeTimeTime(
           `${String(w.getHours()).padStart(2, '0')}:${String(w.getMinutes()).padStart(2, '0')}`
         );
+        setIsAutoFilled(true);
       } else {
+        setDate(formatLocalDate(new Date()));
         setBedtimeTime('23:00');
         setWakeTimeTime('07:00');
+        setIsAutoFilled(false);
       }
       setQuality(4);
       setEnergyLevel(4);
@@ -153,6 +163,7 @@ export function LogSleepModal({
   };
 
   const applyPreset = (bed: string, wake: string) => {
+    setIsAutoFilled(false);
     setBedtimeTime(bed);
     setWakeTimeTime(wake);
   };
@@ -163,12 +174,10 @@ export function LogSleepModal({
     const [bH, bM] = bedtimeTime.split(':').map(Number);
     const [wH, wM] = wakeTimeTime.split(':').map(Number);
 
-    const baseDate = new Date(date);
-    const bedDate = new Date(baseDate);
-    bedDate.setHours(bH, bM, 0, 0);
+    const [year, month, day] = date.split('-').map(Number);
+    const bedDate = new Date(year, month - 1, day, bH, bM, 0, 0);
 
-    const wakeDate = new Date(baseDate);
-    wakeDate.setHours(wH, wM, 0, 0);
+    const wakeDate = new Date(year, month - 1, day, wH, wM, 0, 0);
     if (wakeDate.getTime() <= bedDate.getTime()) {
       wakeDate.setDate(wakeDate.getDate() + 1);
     }
@@ -246,6 +255,21 @@ export function LogSleepModal({
           className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-5 overscroll-contain"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
+          {/* Auto-filled Feedback Banner */}
+          {isAutoFilled && (
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-purple-500/15 to-indigo-500/20 border border-amber-400/40 flex items-center justify-between gap-3 text-xs text-amber-200 shadow-md shadow-amber-500/10">
+              <div className="flex items-center gap-2.5">
+                <Sparkles className="w-4 h-4 text-amber-400 shrink-0 animate-pulse" />
+                <span className="font-medium">
+                  <strong>Tự động điền:</strong> Đã ghi nhận từ phiên ngủ vừa kết thúc ({bedtimeTime} → {wakeTimeTime}).
+                </span>
+              </div>
+              <span className="px-2.5 py-1 rounded-full bg-amber-400/25 text-amber-300 font-bold text-xs border border-amber-400/40 shrink-0">
+                Đã đồng bộ
+              </span>
+            </div>
+          )}
+
           {/* Quick Presets for Mobile: 1-Tap Fast Selection */}
           <div>
             <span className="block text-xs font-bold text-slate-400 mb-2">⭐ Chọn nhanh 1 chạm:</span>
